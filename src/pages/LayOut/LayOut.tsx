@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SettingOutlined, CoffeeOutlined, HomeOutlined } from '@ant-design/icons';
 import { useLocation, Link, useNavigate, Outlet } from 'react-router-dom';
 import type { MenuProps } from 'antd';
@@ -15,9 +15,22 @@ const breadcrumbNameMap: Record<string, string> = {
     '/system/user': '用户管理',
 };
 
+const subMenuActive: any = {
+    '/welcome': 'welcome',
+    '/system/user': '/system',
+    '/system/menu': '/system',
+    '/system/role': '/system',
+    '/system/department': '/system',
+    '/approval/vacation': '/approval',
+    '/approval/waiting': '/approval',
+    '/approval/workOvertime': '/approval',
+};
+
 const LayOut = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
     const pathSnippets = location.pathname.split('/').filter((i) => i);
 
     const extraBreadcrumbItems = pathSnippets.map((_, index) => {
@@ -38,6 +51,15 @@ const LayOut = () => {
     const clickItem = (path: any) => {
         console.log('path', path);
         navigate(path.key);
+        setSelectedKeys([path.key]);
+    };
+    const clickSubMenu = (value: any) => {
+        if (openKeys.includes(value.key)) {
+            const newOpenKeys = openKeys.filter((item) => item !== value.key);
+            setOpenKeys(newOpenKeys);
+        } else {
+            setOpenKeys([...openKeys, value.key]);
+        }
     };
 
     const menus: MenuProps['items'] = [
@@ -51,6 +73,7 @@ const LayOut = () => {
             key: '/system',
             icon: React.createElement(SettingOutlined),
             label: '系统管理',
+            onTitleClick: clickSubMenu,
             children: [
                 {
                     key: '/system/user',
@@ -78,6 +101,7 @@ const LayOut = () => {
             key: '/approval',
             icon: React.createElement(CoffeeOutlined),
             label: '审批管理',
+            onTitleClick: clickSubMenu,
             children: [
                 {
                     key: '/approval/vacation',
@@ -97,6 +121,12 @@ const LayOut = () => {
             ]
         }
     ];
+    useEffect(() => {
+        setSelectedKeys([location.pathname]);
+        if (subMenuActive[location.pathname]) {
+            setOpenKeys([subMenuActive[location.pathname]]);
+        }
+    }, []);
 
     return (
         <Layout className="homeLayOut">
@@ -108,8 +138,8 @@ const LayOut = () => {
                 <Menu
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    selectedKeys={selectedKeys}
+                    openKeys={openKeys}
                     style={{ height: '100%', borderRight: 0 }}
                     items={menus}
                 />
