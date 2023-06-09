@@ -68,7 +68,7 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: false,
+                            modules: true,
                             sourceMap: isDev,
                             importLoaders: 1, // 需要先被 sass-loader 处理，所以这里设置为 1
                         },

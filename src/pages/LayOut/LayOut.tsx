@@ -4,7 +4,7 @@ import { useLocation, Link, useNavigate, Outlet } from 'react-router-dom';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import Logo from '../../assets/images/bq.jpg';
-import './LayOut.scss';
+import styles from './LayOut.module.scss';
 
 const { Content, Sider } = Layout;
 
@@ -86,12 +86,12 @@ const LayOut = () => {
                     onClick: clickItem
                 },
                 {
-                    key: 'system/role',
+                    key: '/system/role',
                     label: '角色管理',
                     onClick: clickItem
                 },
                 {
-                    key: 'system/department',
+                    key: '/system/department',
                     label: '部门管理',
                     onClick: clickItem
                 }
@@ -123,19 +123,21 @@ const LayOut = () => {
     ];
     useEffect(() => {
         if (location.pathname) {
+            console.log('location.pathname', location.pathname);
             setSelectedKeys([location.pathname === '/' ? '/welcome' : location.pathname]);
             if (subMenuActive[location.pathname]) {
                 setOpenKeys([subMenuActive[location.pathname]]);
             }
         }
     }, []);
+    console.log('selectedKeys', selectedKeys);
 
     return (
-        <Layout className="homeLayOut">
-            <Sider width={200} className="site-layout-background">
-                <div className="logo">
+        <Layout className={styles.homeLayOut}>
+            <Sider width={200}>
+                <div className={styles.logo}>
                     <img src={Logo} alt="" />
-                    <span className="logoText">Management</span>
+                    <span className={styles.logoText}>Management</span>
                 </div>
                 <Menu
                     theme="dark"
@@ -151,7 +153,6 @@ const LayOut = () => {
                     {breadcrumbItems}
                 </Breadcrumb>
                 <Content
-                    className="site-layout-background"
                     style={{
                         margin: 0,
                         minHeight: 280,
