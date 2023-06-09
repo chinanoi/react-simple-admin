@@ -6,6 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
 const { isDev, PROJECT_PATH } = require('./constant');
 
+console.log('isDev', isDev);
+
 module.exports = {
     entry: {
         index: resolve(PROJECT_PATH, './src/index.tsx'),
@@ -13,6 +15,7 @@ module.exports = {
     output: {
         filename: `js/[name]${isDev ? ' ' : '.[hash:8]'}.js`,
         path: resolve(PROJECT_PATH, './dist'),
+        publicPath: '/',
     },
     optimization: {},
     resolve: {

@@ -122,9 +122,11 @@ const LayOut = () => {
         }
     ];
     useEffect(() => {
-        setSelectedKeys([location.pathname]);
-        if (subMenuActive[location.pathname]) {
-            setOpenKeys([subMenuActive[location.pathname]]);
+        if (location.pathname) {
+            setSelectedKeys([location.pathname === '/' ? '/welcome' : location.pathname]);
+            if (subMenuActive[location.pathname]) {
+                setOpenKeys([subMenuActive[location.pathname]]);
+            }
         }
     }, []);
 
