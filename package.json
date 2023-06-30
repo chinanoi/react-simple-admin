@@ -4,7 +4,7 @@
     "description": "",
     "packageManager": "pnpm@8.1.1",
     "scripts": {
-        "preinstall": "npx only-allow pnpm",
+        "preinstall": "pnpx only-allow pnpm",
         "dev:all": "npm-run-all --parallel project:*",
         "project:client": "cd packages/react-admin-client && pnpm run dev",
         "project:server": "cd packages/nest-admin-server && pnpm run dev",
