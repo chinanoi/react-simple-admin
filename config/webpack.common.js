@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
 const { isDev, PROJECT_PATH } = require('./constant');
+const path = require('path');
 
 console.log('isDev', isDev);
 
@@ -28,58 +29,81 @@ module.exports = {
     },
     module: {
         rules: [{
-                test: /\.css$/,
-                use: [
-                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: false, // 默认就是 false
-                            sourceMap: isDev, // 开启后与 devtool 设置一致, 开发环境开启，生产环境关闭
-                            importLoaders: 0, // 指定在 CSS loader 处理前使用的 laoder 数量
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: false,
-                            sourceMap: isDev,
-                            importLoaders: 1, // 需要先被 less-loader 处理，所以这里设置为 1
-                        },
+                oneOf: [{
+                        test: /\.css$/,
+                        use: [
+                            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    modules: false, // 默认就是 false
+                                    sourceMap: isDev, // 开启后与 devtool 设置一致, 开发环境开启，生产环境关闭
+                                    importLoaders: 0, // 指定在 CSS loader 处理前使用的 laoder 数量
+                                },
+                            },
+                        ],
                     },
                     {
-                        loader: 'less-loader',
-                        options: {
-                            sourceMap: isDev,
-                        },
+                        test: /\.less$/,
+                        use: [
+                            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    modules: false,
+                                    sourceMap: isDev,
+                                    importLoaders: 1, // 需要先被 less-loader 处理，所以这里设置为 1
+                                },
+                            },
+                            {
+                                loader: 'less-loader',
+                                options: {
+                                    sourceMap: isDev,
+                                },
+                            },
+                        ],
                     },
-                ],
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'style-loader',
                     {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            sourceMap: isDev,
-                            importLoaders: 1, // 需要先被 sass-loader 处理，所以这里设置为 1
-                        },
+                        // 定义一下，使用 xxx.module.（less|css)
+                        test: /.module.(scss|css)$/,
+                        include: [path.resolve(__dirname, '../src')],
+                        use: [
+                            // 我们一般情况下，在开发环境中，我们用 'style-loader', 方便我们做热更新。
+                            // 生产环境下，我们要放在单独的文件里。
+                            !isDev ? "style-loader" : MiniCssExtractPlugin.loader,
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    importLoaders: 2,
+                                    modules: {
+                                        localIdentName: '[path][name]__[local]--[hash:base64:4]'
+                                    }
+                                }
+                            },
+                            "postcss-loader",
+                            "sass-loader"
+                        ]
                     },
                     {
-                        loader: 'sass-loader',
-                        options: {
-                            sourceMap: isDev,
-                        },
-                    },
-                ],
+                        test: /\.scss$/,
+                        use: [
+                            'style-loader',
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    sourceMap: isDev,
+                                    importLoaders: 1, // 需要先被 sass-loader 处理，所以这里设置为 1
+                                },
+                            },
+                            {
+                                loader: 'sass-loader',
+                                options: {
+                                    sourceMap: isDev,
+                                },
+                            },
+                        ],
+                    }
+                ]
             },
             {
                 test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -111,6 +135,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new MiniCssExtractPlugin(),
         new CopyWebpackPlugin({
             patterns: [{
                 context: resolve(PROJECT_PATH, './public'),
