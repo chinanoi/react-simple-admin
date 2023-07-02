@@ -7,8 +7,6 @@ const WebpackBar = require('webpackbar');
 const { isDev, PROJECT_PATH } = require('./constant');
 const path = require('path');
 
-console.log('isDev', isDev);
-
 module.exports = {
     entry: {
         index: resolve(PROJECT_PATH, './src/index.tsx'),
