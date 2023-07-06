@@ -18,8 +18,8 @@ export class AppController {
   private jwtService: JwtService;
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getHello() {
+    return await this.appService.getHello();
   }
 
   @Get('sss')
