@@ -10,7 +10,8 @@ import { createClient } from 'redis';
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'guang',
+      global: true,
+      secret: 'baiyi',
       signOptions: {
         expiresIn: '7d',
       },
