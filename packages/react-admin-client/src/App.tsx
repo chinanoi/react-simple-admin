@@ -8,7 +8,6 @@ import NoMatch from './pages/NoMatch';
 import Role from './pages/Role';
 import DepartMent from './pages/DepartMent';
 import Menu from './pages/Menu'
-import './App.scss';
 
 function App() {
     return (

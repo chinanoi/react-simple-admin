@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Role.scss';
+import styles from './Role.module.less';
 
 const Role = () => {
     return (

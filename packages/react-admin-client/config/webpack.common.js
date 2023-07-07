@@ -9,12 +9,12 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        index: resolve(PROJECT_PATH, './src/index.tsx'),
+        index: resolve(PROJECT_PATH, './src/index.tsx')
     },
     output: {
         filename: `js/[name]${isDev ? ' ' : '.[hash:8]'}.js`,
         path: resolve(PROJECT_PATH, './dist'),
-        publicPath: '/',
+        publicPath: '/'
     },
     optimization: {},
     resolve: {
@@ -22,8 +22,8 @@ module.exports = {
         alias: {
             Src: resolve(PROJECT_PATH, './src'),
             Components: resolve(PROJECT_PATH, './src/components'),
-            Utils: resolve(PROJECT_PATH, './src/utils'),
-        },
+            Utils: resolve(PROJECT_PATH, './src/utils')
+        }
     },
     module: {
         rules: [{
@@ -36,10 +36,31 @@ module.exports = {
                                 options: {
                                     modules: false, // 默认就是 false
                                     sourceMap: isDev, // 开启后与 devtool 设置一致, 开发环境开启，生产环境关闭
-                                    importLoaders: 0, // 指定在 CSS loader 处理前使用的 laoder 数量
-                                },
+                                    importLoaders: 0 // 指定在 CSS loader 处理前使用的 laoder 数量
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        // 定义一下，使用 xxx.module.（less|css)
+                        test: /.module.(less|css)$/,
+                        include: [path.resolve(__dirname, '../src')],
+                        use: [
+                            // 我们一般情况下，在开发环境中，我们用 'style-loader', 方便我们做热更新。
+                            // 生产环境下，我们要放在单独的文件里。
+                            !isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    importLoaders: 2,
+                                    modules: {
+                                        localIdentName: '[path][name]__[local]--[hash:base64:4]'
+                                    }
+                                }
                             },
-                        ],
+                            'postcss-loader',
+                            'less-loader'
+                        ]
                     },
                     {
                         test: /\.less$/,
@@ -50,56 +71,16 @@ module.exports = {
                                 options: {
                                     modules: false,
                                     sourceMap: isDev,
-                                    importLoaders: 1, // 需要先被 less-loader 处理，所以这里设置为 1
-                                },
+                                    importLoaders: 1 // 需要先被 less-loader 处理，所以这里设置为 1
+                                }
                             },
                             {
                                 loader: 'less-loader',
                                 options: {
-                                    sourceMap: isDev,
-                                },
-                            },
-                        ],
-                    },
-                    {
-                        // 定义一下，使用 xxx.module.（less|css)
-                        test: /.module.(scss|css)$/,
-                        include: [path.resolve(__dirname, '../src')],
-                        use: [
-                            // 我们一般情况下，在开发环境中，我们用 'style-loader', 方便我们做热更新。
-                            // 生产环境下，我们要放在单独的文件里。
-                            !isDev ? "style-loader" : MiniCssExtractPlugin.loader,
-                            {
-                                loader: 'css-loader',
-                                options: {
-                                    importLoaders: 2,
-                                    modules: {
-                                        localIdentName: '[path][name]__[local]--[hash:base64:4]'
-                                    }
+                                    sourceMap: isDev
                                 }
-                            },
-                            "postcss-loader",
-                            "sass-loader"
+                            }
                         ]
-                    },
-                    {
-                        test: /\.scss$/,
-                        use: [
-                            'style-loader',
-                            {
-                                loader: 'css-loader',
-                                options: {
-                                    sourceMap: isDev,
-                                    importLoaders: 1, // 需要先被 sass-loader 处理，所以这里设置为 1
-                                },
-                            },
-                            {
-                                loader: 'sass-loader',
-                                options: {
-                                    sourceMap: isDev,
-                                },
-                            },
-                        ],
                     }
                 ]
             },
@@ -110,9 +91,9 @@ module.exports = {
                     options: {
                         limit: 10 * 1024,
                         name: '[name].[contenthash:8].[ext]',
-                        outputPath: 'assets/images',
-                    },
-                }, ],
+                        outputPath: 'assets/images'
+                    }
+                }]
             },
             {
                 test: /\.(ttf|woff|woff2|eot|otf)$/,
@@ -120,17 +101,17 @@ module.exports = {
                     loader: 'url-loader',
                     options: {
                         name: '[name].[contenthash:8].[ext]',
-                        outputPath: 'assets/fonts',
-                    },
-                }, ],
+                        outputPath: 'assets/fonts'
+                    }
+                }]
             },
             {
                 test: /\.(tsx?|js)$/,
                 loader: 'babel-loader',
                 options: { cacheDirectory: true },
-                exclude: /node_modules/,
-            },
-        ],
+                exclude: /node_modules/
+            }
+        ]
     },
     plugins: [
         new MiniCssExtractPlugin(),
@@ -143,16 +124,17 @@ module.exports = {
                 globOptions: {
                     dot: true,
                     gitignore: true,
-                    ignore: ['**/index.html'],
-                },
-            }, ],
+                    ignore: ['**/index.html']
+                }
+            }]
         }),
         new HtmlWebpackPlugin({
             template: resolve(PROJECT_PATH, './public/index.html'),
             filename: 'index.html',
             cache: false, // 特别重要：防止之后使用v6版本 copy-webpack-plugin 时代码修改一刷新页面为空问题。
             minify: isDev ?
-                false : {
+                false :
+                {
                     removeAttributeQuotes: true,
                     collapseWhitespace: true,
                     removeComments: true,
@@ -164,17 +146,17 @@ module.exports = {
                     minifyCSS: true,
                     minifyJS: true,
                     minifyURLs: true,
-                    useShortDoctype: true,
-                },
+                    useShortDoctype: true
+                }
         }),
         new WebpackBar({
             name: isDev ? 'run' : 'build',
-            color: isDev ? '#00b2a9' : '#ee6139',
+            color: isDev ? '#00b2a9' : '#ee6139'
         }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
-                configFile: resolve(PROJECT_PATH, './tsconfig.json'),
-            },
+                configFile: resolve(PROJECT_PATH, './tsconfig.json')
+            }
         })
-    ],
+    ]
 };

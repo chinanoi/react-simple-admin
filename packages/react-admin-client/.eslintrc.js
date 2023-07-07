@@ -1,10 +1,18 @@
+// .eslintrc.cjs
 module.exports = {
-    "plugins": ["prettier"],
-    "rules": {
-        "prettier/prettier": "error"
+    env: {
+        browser: true,
+        es2021: true,
+        node: true
     },
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module"
+    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+    overrides: [],
+    parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+    },
+    plugins: ['vue'],
+    rules: {
+        quotes: ['error', 'single']
     }
-}
+};

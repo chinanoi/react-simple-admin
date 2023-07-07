@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Menu.scss';
+import styles from './Menu.module.less';
 
 const Menu = () => {
     return (

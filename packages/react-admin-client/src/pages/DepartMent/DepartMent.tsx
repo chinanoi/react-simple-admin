@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './DepartMent.scss';
+import styles from './DepartMent.module.less';
 
 const Role = () => {
     return (
-        <div className="userList">
+        <div className={styles.userList}>
             部门管理
         </div>
     );

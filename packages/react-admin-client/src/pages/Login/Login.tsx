@@ -1,28 +1,13 @@
 import React from 'react';
+import styles from './Login.module.less';
 import axios from 'axios';
 
-const Login = () => {
-    function testSessionLogin(){
-        axios.get('/api/sss')
-        .then((res)=>{
-            console.log(res);
-        })
-    }
-    function testJwtLogin(){
-        axios.get('/api/ttt',{headers:{authorization: '1111'}})
-        .then((res)=>{
-            console.log(res);
-        })
-    }
-    // React.useEffect(()=>{
-    //     // testSessionLogin()
-    //     testJwtLogin()
-    // },[])
-    return (
-        <div className="Login">
-            LoginLoginLoginLoginLoginLoginLogin
-        </div>
-    );
-};
 
-export default Login;
+const LoginTest = () => {
+
+    return (
+        <div>111111</div>
+    )
+}
+
+export default LoginTest;

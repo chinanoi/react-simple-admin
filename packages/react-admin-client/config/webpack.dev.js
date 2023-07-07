@@ -22,9 +22,9 @@ module.exports = merge(common, {
                 target: 'http://localhost:3000', // 设置代理目标
                 changeOrigin: true, // 改变请求源
                 pathRewrite: {
-                    '^/api': '', // 将 /api 前缀替换为空字符串
-                },
-            },
+                    '^/api': '' // 将 /api 前缀替换为空字符串
+                }
+            }
         }
     }
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Welcome.module.scss';
+import styles from './Welcome.module.less';
 
 const Welcome = () => {
     return (

@@ -4,7 +4,7 @@ import { useLocation, Link, useNavigate, Outlet } from 'react-router-dom';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import Logo from '../../assets/images/bq.jpg';
-import styles from './LayOut.module.scss';
+import styles from './LayOut.module.less';
 
 const { Content, Sider } = Layout;
 
