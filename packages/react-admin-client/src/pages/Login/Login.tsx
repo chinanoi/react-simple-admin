@@ -1,67 +1,66 @@
-import React,{useState} from 'react';
-import {Form, Input, Checkbox, Button} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Form, Input, message, Button, Spin } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styles from './Login.module.less';
-import {reqLogin} from '../../api/login';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
         // 登录完成后 发送请求 调用接口获取用户信息
         setLoading(true);
-        reqLogin(values)
-        .then((res)=>{
-            console.log(res);
-        })
-        .catch((error)=>{
-            console.dir(error);
-        })
-        // login(username, password)
-        //   .then((data) => {
-        //     message.success("登录成功");
-        //     handleUserInfo(data.token);
-        //   })
-        //   .catch((error) => {
-        //     setLoading(false);
-        //     message.error(error);
-        //   });
+        axios.post('api/user/login', values)
+            .then((res) => {
+                message.success("登录成功");
+                const token = res.headers.authorization;
+                localStorage.setItem('baiyi-admin-system-token', token);
+                navigate('/');
+            }).catch((error) => {
+                console.dir(error);
+                setLoading(false);
+                message.error(error.message);
+            });
     };
 
     return (
         <div className={styles.loginBox}>
-            <Form
-                name="login"
-                className={styles.loginForm}
-                initialValues={{username: 'admin',password:'12345',remember:false}}
-                onFinish={onFinish}
-            >
-                <Form.Item
-                    name="username"
-                    rules={[{required: true, message: '请输入你的用户名!'}]}
-                >
-                    <Input
-                        prefix={<UserOutlined className="site-form-item-icon" rev={undefined} />}
-                        placeholder="用户名"
-                    />
-                </Form.Item>
-                <Form.Item
-                    name="password"
-                    rules={[{required: true, message: '请输入你的密码!'}]}
-                >
-                    <Input
-                        prefix={<LockOutlined rev={undefined} />}
-                        type="password"
-                        placeholder="密码"
-                    />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" className={styles.loginButton}>
-                        登录
-                    </Button>
-                </Form.Item>
-            </Form>
+            <div className={styles.loginFormBox}>
+                <Spin size="large" spinning={loading}>
+                    <Form
+                        name="login"
+                        initialValues={{ username: 'admin', password: '12345' }}
+                        onFinish={onFinish}
+                    >
+                        <Form.Item
+                            name="username"
+                            rules={[{ required: true, message: '请输入你的用户名!' }]}
+                        >
+                            <Input
+                                prefix={<UserOutlined className="site-form-item-icon" rev={undefined} />}
+                                placeholder="用户名"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: '请输入你的密码!' }]}
+                        >
+                            <Input
+                                prefix={<LockOutlined rev={undefined} />}
+                                type="password"
+                                placeholder="密码"
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" className={styles.loginButton}>
+                                登录
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Spin>
+            </div>
         </div>
     );
 };

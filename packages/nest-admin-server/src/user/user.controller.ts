@@ -3,6 +3,7 @@ import { LoginDto } from './dto/login.dto';
 import {
   Controller,
   Post,
+  HttpCode,
   Body,
   Inject,
   Req,
@@ -22,6 +23,7 @@ export class UserController {
   private jwtService: JwtService;
 
   @Post('login')
+  @HttpCode(200)
   async login(
     @Body() user: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -36,9 +38,18 @@ export class UserController {
         },
       });
       res.setHeader('authorization', 'bearer ' + token);
-      return 'login success';
+      return {
+        code: 200,
+        data: {
+          userName: foundUser.username,
+        },
+        message: '登录成功',
+      };
     } else {
-      return 'login fail';
+      return {
+        code: 401,
+        message: '登录失败, 用户名或密码错误',
+      };
     }
   }
 

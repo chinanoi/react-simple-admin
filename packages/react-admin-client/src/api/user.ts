@@ -10,7 +10,7 @@ interface ILoginResult{
     username: string;
 }
 
-export function reqLogin(params: ILoginParam): Promise<ILoginResult> {
+export function reqGetUserInfo(params: ILoginParam): Promise<ILoginResult> {
     return api({
         url: 'api/user/login',
         method: 'post',
