@@ -2,18 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { SettingOutlined, CoffeeOutlined, HomeOutlined } from '@ant-design/icons';
 import { useLocation, Link, useNavigate, Outlet } from 'react-router-dom';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import {  Layout, Menu } from 'antd';
+import Header from './Header'
 import Logo from '../../assets/images/bq.jpg';
 import styles from './LayOut.module.less';
 
 const { Content, Sider } = Layout;
-
-const breadcrumbNameMap: Record<string, string> = {
-    '/': '首页',
-    '/welcome': '欢迎体验React后台管理系统',
-    '/system': '系统管理',
-    '/system/user': '用户管理',
-};
 
 const subMenuActive: any = {
     '/welcome': 'welcome',
@@ -31,23 +25,7 @@ const LayOut = () => {
     const location = useLocation();
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [openKeys, setOpenKeys] = useState<string[]>([]);
-    const pathSnippets = location.pathname.split('/').filter((i) => i);
-
-    const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-        const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-        return (
-            <Breadcrumb.Item key={url}>
-                <Link to={url}>{breadcrumbNameMap[url]}</Link>
-            </Breadcrumb.Item>
-        );
-    });
-
-    const breadcrumbItems = [
-        <Breadcrumb.Item key="home">
-            <Link to="/">首页</Link>
-        </Breadcrumb.Item>,
-    ].concat(extraBreadcrumbItems);
-
+   
     const clickItem = (path: any) => {
         console.log('path', path);
         navigate(path.key);
@@ -121,6 +99,7 @@ const LayOut = () => {
             ]
         }
     ];
+    
     useEffect(() => {
         if (location.pathname) {
             console.log('location.pathname', location.pathname);
@@ -130,7 +109,6 @@ const LayOut = () => {
             }
         }
     }, []);
-    console.log('selectedKeys', selectedKeys);
 
     return (
         <Layout className={styles.homeLayOut}>
@@ -148,14 +126,13 @@ const LayOut = () => {
                     items={menus}
                 />
             </Sider>
-            <Layout style={{ padding: '0 24px 24px' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                    {breadcrumbItems}
-                </Breadcrumb>
+            <Layout>
+                <Header />
                 <Content
                     style={{
                         margin: 0,
                         minHeight: 280,
+                        padding: '20px'
                     }}
                 >
                     <Outlet />
