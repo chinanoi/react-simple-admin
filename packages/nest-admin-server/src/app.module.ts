@@ -3,9 +3,13 @@ import { AppController } from './app.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
+import { Permission } from './user/entities/permission.entity';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createClient } from 'redis';
+import { RoleModule } from './role/role.module';
+import { DepartmentModule } from './department/department.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -26,13 +30,16 @@ import { createClient } from 'redis';
       database: 'my_admin',
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: [User, Permission],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
         authPlugin: 'sha256_password',
       },
     }),
+    RoleModule,
+    DepartmentModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

@@ -31,12 +31,15 @@ export class UserController {
     const foundUser = await this.userService.login(user);
 
     if (foundUser) {
-      const token = await this.jwtService.signAsync({
-        user: {
-          id: foundUser.id,
-          username: foundUser.username,
+      const token = await this.jwtService.signAsync(
+        {
+          user: {
+            id: foundUser.id,
+            username: foundUser.username,
+          },
         },
-      });
+        { expiresIn: '2d' },
+      );
       res.setHeader('authorization', 'bearer ' + token);
       return {
         code: 200,
@@ -47,7 +50,7 @@ export class UserController {
       };
     } else {
       return {
-        code: 401,
+        code: 403,
         message: '登录失败, 用户名或密码错误',
       };
     }

@@ -4,10 +4,10 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { AuthenticationException } from './user/Exception/AuthenticationException';
 
 @Injectable()
 export class LoginGuard implements CanActivate {
@@ -24,7 +24,7 @@ export class LoginGuard implements CanActivate {
     const bearer = authorization.split(' ');
 
     if (!bearer || bearer.length < 2) {
-      throw new UnauthorizedException('登录 token 错误');
+      throw new AuthenticationException('登录 token 错误');
     }
 
     const token = bearer[1];
@@ -34,7 +34,7 @@ export class LoginGuard implements CanActivate {
       (request as any).user = info.user;
       return true;
     } catch (e) {
-      throw new UnauthorizedException('登录 token 失效，请重新登录');
+      throw new AuthenticationException('登录 token 失效，请重新登录');
     }
   }
 }

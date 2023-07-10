@@ -1,7 +1,6 @@
-import axios, {AxiosResponse, Method} from 'axios';
+import axios, { AxiosResponse, Method } from 'axios';
 import ApiException from './exception/ApiException';
-import { useNavigate } from 'react-router-dom';
-import {Modal} from 'antd';
+import { Modal } from 'antd';
 
 interface ApiOption {
     url: string;
@@ -11,8 +10,8 @@ interface ApiOption {
 }
 
 const api = (option: ApiOption) => {
-    const {url, body, headers, ...directOption} = option;
-    const navigate = useNavigate()
+    const { url, body, headers, ...directOption } = option;
+
     const fetchHeaders: Record<string, string> = {
         credentials: 'same-origin'
     };
@@ -31,11 +30,14 @@ const api = (option: ApiOption) => {
     // 请求拦截
     const token = localStorage.getItem('baiyi-admin-system-token');
     if (token) {
-        axios.defaults.headers.common["authorization"] = token;
-      } else {
-        delete axios.defaults.headers.common["authorization"];
+        axios.defaults.headers["authorization"] = token;
+    } else {
+        delete axios.defaults.headers["authorization"];
         localStorage.removeItem('baiyi-admin-system-token');
-      }
+    }
+
+    console.log('object');
+
 
     const promise = axios.request({
         url,
@@ -59,7 +61,7 @@ const api = (option: ApiOption) => {
     return promise
         .catch((error: IRequestError) => {
             const result = error.response?.data as IResult;
-            console.log('result',result);
+            console.log('result', result);
             if (result && result.code) {
                 throw new ApiException(result.code, result.message);
             }
@@ -70,23 +72,25 @@ const api = (option: ApiOption) => {
                 const result = response.data as IResult;
                 if (result.code === 200) {
                     return result.data;
-                } else if(result.code === 403){
+                } else if (result.code === 403) {
                     Modal.confirm({
                         title: "确定登出?",
                         content:
-                          "由于长时间未操作，您已被登出，可以取消继续留在该页面，或者重新登录",
+                            "由于长时间未操作，您已被登出，可以取消继续留在该页面，或者重新登录",
                         okText: "重新登录",
                         cancelText: "取消",
                         onOk() {
-                        //   先清空token
-                        localStorage.removeItem('baiyi-admin-system-token');
-                        // 在跳转登录页面
-                        navigate('/login');
+                            //   先清空token
+                            localStorage.removeItem('baiyi-admin-system-token');
+                            const nowOrigin = location.origin
+                            window.location.href = `${nowOrigin}/login`
+                            // 在跳转登录页面
+                            // navigate('/login');
                         },
                         onCancel() {
-                          console.log("Cancel");
+                            console.log("Cancel");
                         },
-                      });
+                    });
                 } else if (result.code) {
                     console.log(result);
                     throw new ApiException(result.code, result.message, result.data);

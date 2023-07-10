@@ -14,14 +14,19 @@ const Login = () => {
         setLoading(true);
         axios.post('api/user/login', values)
             .then((res) => {
-                message.success("登录成功");
-                const token = res.headers.authorization;
-                localStorage.setItem('baiyi-admin-system-token', token);
-                navigate('/');
+                console.log('res', res);
+                if (res.data.code === 200) {
+                    message.success("登录成功");
+                    const token = res.headers.authorization;
+                    localStorage.setItem('baiyi-admin-system-token', token);
+                    navigate('/');
+                } else {
+                    message.error(res.data.message);
+                }
             }).catch((error) => {
-                console.dir(error);
-                setLoading(false);
                 message.error(error.message);
+            }).finally(() => {
+                setLoading(false);
             });
     };
 

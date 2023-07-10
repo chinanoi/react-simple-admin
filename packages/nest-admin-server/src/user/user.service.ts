@@ -2,8 +2,9 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { AuthenticationException } from './Exception/AuthenticationException';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
+import { Repository, EntityManager } from 'typeorm';
+import { Permission } from './entities/permission.entity';
 import { User } from './entities/user.entity';
 import * as crypto from 'crypto';
 
@@ -20,6 +21,9 @@ export class UserService {
   @InjectRepository(User)
   private userRepository: Repository<User>;
 
+  @InjectEntityManager()
+  entityManager: EntityManager;
+
   async login(user: LoginDto) {
     const foundUser = await this.userRepository.findOneBy({
       username: user.username,
@@ -32,6 +36,18 @@ export class UserService {
       throw new AuthenticationException('密码错误');
     }
     return foundUser;
+  }
+
+  async findByUsername(username: string) {
+    const user = await this.entityManager.findOne(User, {
+      where: {
+        username,
+      },
+      relations: {
+        permissions: true,
+      },
+    });
+    return user;
   }
 
   async register(user: RegisterDto) {
