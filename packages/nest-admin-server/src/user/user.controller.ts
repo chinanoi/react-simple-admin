@@ -36,6 +36,7 @@ export class UserController {
           user: {
             id: foundUser.id,
             username: foundUser.username,
+            roles: foundUser.roles,
           },
         },
         { expiresIn: '2d' },

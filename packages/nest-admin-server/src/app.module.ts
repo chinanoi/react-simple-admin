@@ -4,12 +4,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
 import { Permission } from './user/entities/permission.entity';
+import { Role } from './user/entities/role.entity';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createClient } from 'redis';
 import { RoleModule } from './role/role.module';
 import { DepartmentModule } from './department/department.module';
 import { RedisModule } from './redis/redis.module';
+import { LoginGuard } from './login.guard';
+import { PermissionGuard } from './permission.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -30,7 +34,7 @@ import { RedisModule } from './redis/redis.module';
       database: 'my_admin',
       synchronize: true,
       logging: true,
-      entities: [User, Permission],
+      entities: [User, Permission, Role],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -44,6 +48,14 @@ import { RedisModule } from './redis/redis.module';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
     {
       provide: 'REDIS_CLIENT',
       async useFactory() {

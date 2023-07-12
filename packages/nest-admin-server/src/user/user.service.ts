@@ -3,8 +3,9 @@ import { RegisterDto } from './dto/register.dto';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { AuthenticationException } from './Exception/AuthenticationException';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
-import { Repository, EntityManager } from 'typeorm';
+import { Repository, EntityManager, In } from 'typeorm';
 import { Permission } from './entities/permission.entity';
+import { Role } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import * as crypto from 'crypto';
 
@@ -24,30 +25,34 @@ export class UserService {
   @InjectEntityManager()
   entityManager: EntityManager;
 
-  async login(user: LoginDto) {
-    const foundUser = await this.userRepository.findOneBy({
-      username: user.username,
-    });
-
-    if (!foundUser) {
-      throw new AuthenticationException('用户名不存在');
-    }
-    if (foundUser.password !== md5(user.password)) {
-      throw new AuthenticationException('密码错误');
-    }
-    return foundUser;
-  }
-
-  async findByUsername(username: string) {
+  async login(loginUser: LoginDto) {
     const user = await this.entityManager.findOne(User, {
       where: {
-        username,
+        username: loginUser.username,
+      },
+      relations: {
+        roles: true,
+      },
+    });
+
+    if (!user) {
+      throw new AuthenticationException('用户名不存在');
+    }
+    if (user.password !== md5(loginUser.password)) {
+      throw new AuthenticationException('密码错误');
+    }
+    return user;
+  }
+
+  async findRolesByIds(roleIds: number[]) {
+    return this.entityManager.find(Role, {
+      where: {
+        id: In(roleIds),
       },
       relations: {
         permissions: true,
       },
     });
-    return user;
   }
 
   async register(user: RegisterDto) {

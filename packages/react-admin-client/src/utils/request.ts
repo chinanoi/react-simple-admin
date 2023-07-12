@@ -72,7 +72,7 @@ const api = (option: ApiOption) => {
                 const result = response.data as IResult;
                 if (result.code === 200) {
                     return result.data;
-                } else if (result.code === 403) {
+                } else if (result.code === 401) {
                     Modal.confirm({
                         title: "确定登出?",
                         content:

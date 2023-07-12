@@ -9,7 +9,6 @@ const Role = () => {
         reqGetRoleList()
             .then((res) => {
                 console.log(res);
-                
             });
         reqGetDepartmentList()
             .then((res) => {

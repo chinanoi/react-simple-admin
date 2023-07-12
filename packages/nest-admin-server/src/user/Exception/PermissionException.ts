@@ -4,7 +4,7 @@ export class PermissionException extends HttpException {
   constructor(message: string) {
     super(
       {
-        code: 401,
+        code: 403,
         message: message,
       },
       HttpStatus.OK,
