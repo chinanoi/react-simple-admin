@@ -8,9 +8,9 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
+import { RequireLogin, RequirePermission } from 'src/custom-decorator';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { RequireLogin } from 'src/custom-decorator';
 
 @Controller('department')
 @RequireLogin()
@@ -23,6 +23,7 @@ export class DepartmentController {
   }
 
   @Get()
+  @RequirePermission('查询 bbb')
   findAll() {
     return this.departmentService.findAll();
   }

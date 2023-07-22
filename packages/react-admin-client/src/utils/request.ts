@@ -36,9 +36,6 @@ const api = (option: ApiOption) => {
         localStorage.removeItem('baiyi-admin-system-token');
     }
 
-    console.log('object');
-
-
     const promise = axios.request({
         url,
         data: fetchOption.body,
@@ -61,7 +58,6 @@ const api = (option: ApiOption) => {
     return promise
         .catch((error: IRequestError) => {
             const result = error.response?.data as IResult;
-            console.log('result', result);
             if (result && result.code) {
                 throw new ApiException(result.code, result.message);
             }
@@ -82,13 +78,9 @@ const api = (option: ApiOption) => {
                         onOk() {
                             //   先清空token
                             localStorage.removeItem('baiyi-admin-system-token');
+                            // 在跳转登录页面
                             const nowOrigin = location.origin
                             window.location.href = `${nowOrigin}/login`
-                            // 在跳转登录页面
-                            // navigate('/login');
-                        },
-                        onCancel() {
-                            console.log("Cancel");
                         },
                     });
                 } else if (result.code) {

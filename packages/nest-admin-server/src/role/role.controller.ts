@@ -6,12 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-  SetMetadata,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { RequireLogin, RequirePermission } from 'src/custom-decorator';
+import { RequireLogin } from 'src/custom-decorator';
 
 @Controller('role')
 @RequireLogin()
@@ -24,8 +23,6 @@ export class RoleController {
   }
 
   @Get()
-  @RequirePermission('查询 bbb')
-  @SetMetadata('permission', 'query_department')
   findAll() {
     return this.roleService.findAll();
   }

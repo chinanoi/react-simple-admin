@@ -23,9 +23,7 @@ function App() {
                     {/* 使用 path="*"" 意味着 "匹配所有路径", 所以我们不需要明确地列出别的路径了。 */}
                     <Route path="*" element={<NoMatch />} />
                 </Route>
-                <Route path="/login" element={<Login />}>
-
-                </Route>
+                <Route path="/login" element={<Login />} />
             </Routes>
         </BrowserRouter>
     );

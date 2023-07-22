@@ -7,10 +7,10 @@ import { Permission } from './user/entities/permission.entity';
 import { Role } from './user/entities/role.entity';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { createClient } from 'redis';
+// import { createClient } from 'redis';
 import { RoleModule } from './role/role.module';
 import { DepartmentModule } from './department/department.module';
-import { RedisModule } from './redis/redis.module';
+// import { RedisModule } from './redis/redis.module';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
 import { APP_GUARD } from '@nestjs/core';
@@ -43,7 +43,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     RoleModule,
     DepartmentModule,
-    RedisModule,
+    // RedisModule,
   ],
   controllers: [AppController],
   providers: [
@@ -55,19 +55,6 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: PermissionGuard,
-    },
-    {
-      provide: 'REDIS_CLIENT',
-      async useFactory() {
-        const client = createClient({
-          socket: {
-            host: 'localhost',
-            port: 6379,
-          },
-        });
-        await client.connect();
-        return client;
-      },
     },
   ],
 })

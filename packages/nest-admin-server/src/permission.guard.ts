@@ -1,4 +1,4 @@
-import { RedisService } from './redis/redis.service';
+// import { RedisService } from './redis/redis.service';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,7 +6,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Permission } from './user/entities/permission.entity';
 import { UserService } from './user/user.service';
@@ -21,11 +20,8 @@ export class PermissionGuard implements CanActivate {
   @Inject(Reflector)
   private reflector: Reflector;
 
-  @Inject(JwtService)
-  private jwtService: JwtService;
-
-  @Inject(RedisService)
-  private redisService: RedisService;
+  //   @Inject(RedisService)
+  //   private redisService: RedisService;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
@@ -47,12 +43,6 @@ export class PermissionGuard implements CanActivate {
     if (!bearer || bearer.length < 2) {
       throw new AuthenticationException('登录 token 错误');
     }
-
-    // const token = bearer[1];
-
-    // const info = this.jwtService.verify(token);
-
-    // const user = info.user;
 
     const roles = await this.userService.findRolesByIds(
       user.roles.map((item) => item.id),

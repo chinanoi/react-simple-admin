@@ -27,7 +27,6 @@ const LayOut = () => {
     const [openKeys, setOpenKeys] = useState<string[]>([]);
    
     const clickItem = (path: any) => {
-        console.log('path', path);
         navigate(path.key);
         setSelectedKeys([path.key]);
     };
@@ -102,14 +101,12 @@ const LayOut = () => {
     
     useEffect(() => {
         if (location.pathname) {
-            console.log('location.pathname', location.pathname);
             setSelectedKeys([location.pathname === '/' ? '/welcome' : location.pathname]);
             if (subMenuActive[location.pathname]) {
                 setOpenKeys([subMenuActive[location.pathname]]);
             }
         }
     }, []);
-
     return (
         <Layout className={styles.homeLayOut}>
             <Sider width={200}>
